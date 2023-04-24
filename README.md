@@ -47,8 +47,11 @@ that can be accessed at once as to not overwhelm and not have to account for any
 
 3) Homepage, Aboutpage, Githun anchor (These should be pretty fast and I can work on them after querying is squared.
 
+<img width="1511" alt="Screenshot 2023-04-24 at 6 28 01 PM" src="https://user-images.githubusercontent.com/39196999/234130064-dba5f938-80b2-46c1-ae62-44e8671da2b2.png">
 
+<img width="1510" alt="Screenshot 2023-04-24 at 6 28 24 PM" src="https://user-images.githubusercontent.com/39196999/234130128-4a0b541c-e0b1-41c5-83f6-dcb4cbb47d07.png">
 
+<img width="1510" alt="Screenshot 2023-04-24 at 6 29 31 PM" src="https://user-images.githubusercontent.com/39196999/234130271-20b6d9a1-5707-4fd7-a9cf-b7efc2da7be8.png">
 
 
 
