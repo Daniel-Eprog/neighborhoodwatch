@@ -53,6 +53,8 @@ that can be accessed at once as to not overwhelm and not have to account for any
 
 <img width="1510" alt="Screenshot 2023-04-24 at 6 29 31 PM" src="https://user-images.githubusercontent.com/39196999/234130271-20b6d9a1-5707-4fd7-a9cf-b7efc2da7be8.png">
 
+<img width="1182" alt="Screenshot 2023-04-24 at 6 32 53 PM" src="https://user-images.githubusercontent.com/39196999/234130707-068857f5-dd18-4357-8ee9-a7d37a445fa3.png">
 
+<img width="1182" alt="Screenshot 2023-04-24 at 6 36 35 PM" src="https://user-images.githubusercontent.com/39196999/234131176-b9d315b0-f9b8-4640-b3df-4a5f76a57778.png">
 
 
