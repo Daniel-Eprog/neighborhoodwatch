@@ -1,5 +1,4 @@
-function reveal(){
-        document.getElementsByClassName("totalEntries").style.visibility = "visible";
-  }
+function clicked(){
 
-  document.getElementsByClassName("btn-dark").addEventListener("click", reveal);
+        document.getElementById("totalEntries").style.visibility = "visible";
+  }

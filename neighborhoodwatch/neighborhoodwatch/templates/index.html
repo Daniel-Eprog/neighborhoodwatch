@@ -16,7 +16,7 @@
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 
     <link rel="stylesheet" href="{% static '/style.css' %}">
-    <link rel="stylesheet" href="{% static '/style.css' %}">
+
 </head>
 <body>
     <section id="header">
@@ -32,9 +32,6 @@
                 <ul class="navbar-nav menu">
                   <li class="nav-item menu-item">
                     <a class="nav-link active" aria-current="page" href="#">HOME</a>
-                  </li>
-                  <li class="nav-item menu-item">
-                    <a class="nav-link active" href="#">ABOUT</a>
                   </li>
                   <li class="nav-item menu-item">
                     <a class="nav-link active" href="/querydata">QUERY</a>
@@ -53,24 +50,49 @@
             <p class="txtAnimate">Neighborhood Watch is a crime statistics database!<br></p>
             <p class="txtAnimate">Inside you'll find all the tools you need to query crime information about all the <br></p>
             <p class="txtAnimate">cities, counties, and regions across the United States.<br></p>
-            <p class="txtAnimate">Although Crime Stat DB was built to be pretty intuitive feel free to access the "About" page<br></p>
+            <p class="txtAnimate">Although Neighborhood Watch was built to be pretty intuitive<br></p>
+            <p class="txtAnimate"> we recommend checking out the section below on some guidelines and<br></p>
             <p class="txtAnimate">for information on advanced queries and using the app.<br></p>
     </div>
+    <div class="fontspecific">
+        <h1 class="txtAnimate">How to Use Neighborhoodwatch</h1>
+        <p class="txtAnimate">Because of the nature of how the data is gathered behind the scenes we recommend the following guidlines<br></p>
+        <p class="txtAnimate">1. You may notice when selecting more than 6 states you are not allowed to "SELECT ALL" <br></p>
+        <p class="txtAnimate">    Agencies. This was done to prevent overloading requests and crashing the page.<br></p>
+        <p class="txtAnimate">2. Graphical representation of crimes over time is based on your final selection criteria<br></p>
+        <p class="txtAnimate">    meaning if you want to compare the overall crime in two states youll have to query them separetely <br></p>
+        <p class="txtAnimate">    and keep record to compare them outside of the application.<br></p>
+        <p class="txtAnimate">3. We recommend limiting the number of specific crimes you want to take a look at we recommend about 3<br></p>
+        <p class="txtAnimate">   If you exceed this recommended limit you'll get the data you desire, but the tables and graphs become<br></p>
+        <p class="txtAnimate">   increasingly difficult to read.<br></p>
+        <p class="txtAnimate">4. We also recommend if you are querying entire crime families to only compare a single individual crime type to it.<br></p>
+        <p class="txtAnimate">   Meaning if you want to compare the percentage of assaults to the total number of crimes against persons just choose the single sub field.<br></p>
+        <h1 class="txtAnimate">Example Query: View the overall crime trend for all crimes over time committed in Michigan<br></h1>
+        <p class="txtAnimate">               Select State: Michigan</p>
+        <p class="txtAnimate">               Select Year: SELECT ALL</p>
+        <p class="txtAnimate">               Select Agency Types: SELECT ALL</p>
+        <p class="txtAnimate">               Select Agency: SELECT ALL</p>
+        <p class="txtAnimate">               Select Crime Family: SELECT ALL</p>
+        <p class="txtAnimate">               Select Specific Crimes: Leave Empty</p>
+        <p class="txtAnimate">               Select Graph Type: Line</p>
+</div>
 
     {% if query %}
     <div class="row">
         <div class="col-lg-3">
-            <button onclick="reveal()" type="button" class="btn btn-dark" >Number of Entries</button>
+            <button onclick="clicked()" type="button" class="btn btn-dark" >Number of Entries</button>
         </div>
-        <div class="col-lg-3 totalEntries"> 
+        <div class="col-lg-6" id="totalEntries"> 
+            <p> Total Number of Entries in the Database. </p>
             {% for items in query %}
                 {%for item in items %}
                 <p> {{item}} <p>
                 {% endfor %}
             {% endfor %}
+            
         </div>
-        <div class="col-lg-3 totalEntries">
-            <p> Total Number of Entries in the Database. </p>
+        <div class="col-lg-3">
+            
         </div>
         <div class="col-lg-3">
            
@@ -78,8 +100,7 @@
     </div>    
     {% endif %}
 
-
-    <script src="{% static '/index.js' %}"></script>
+    <script src="{% static 'index.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

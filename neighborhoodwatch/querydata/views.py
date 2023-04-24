@@ -134,6 +134,8 @@ def parameterSelection(request):
     selectedStates = request.POST.getlist('state')
     selectedCrimeFamily = request.POST.getlist ('crimeFamily')
     selectedYears = request.POST.getlist('year')
+    selectedGraph = request.POST.get('graph')
+    filteredCrimes = request.POST.getlist('crime')
 
     crimeFamilyQuery = ""
     #builds a query to union all selected parent tables for their repsective crime family
@@ -203,6 +205,8 @@ def parameterSelection(request):
         newView = newView + " FROM " + crimes
         updatedViewTables.append(newViewName)
         cursor.execute(newView)
+
+        print(updatedCrimeTable)
     
     #builds query to compile the final table view that comprises of all items joined together
     combinedView = ""
@@ -228,33 +232,22 @@ def parameterSelection(request):
     agencies = "\' OR agenciesid.agencyname = \'".join(selectedAgencies)
     #final agencies table
     print("CREATE VIEW finalagencies AS SELECT * FROM agenciesid WHERE agenciesid.agencyname = \'" + agencies + "\'")
-    cursor.execute("CREATE VIEW finalagencies AS SELECT * FROM agenciesid WHERE agenciesid.agencyname = \'" + agencies + "\'")
-    cursor.execute("CREATE VIEW finalcrimetable AS SELECT distinct * FROM " + combinedView)
+    # cursor.execute("CREATE VIEW finalagencies AS SELECT * FROM agenciesid WHERE agenciesid.agencyname = \'" + agencies + "\'")
+    # cursor.execute("CREATE VIEW finalcrimetable AS SELECT distinct * FROM " + combinedView)
 
 
-    cursor.execute("SELECT distinct * FROM finalagencies INNER JOIN finalcrimetable ON finalagencies.agencyid = finalcrimetable.crimesid")
-    table = cursor.fetchall()
+    # cursor.execute("SELECT distinct * FROM finalagencies INNER JOIN finalcrimetable ON finalagencies.agencyid = finalcrimetable.crimesid")
+    # table = cursor.fetchall()
     
-    columnnames = []
-    for item in cursor.description:
-        columnnames.append(item[0])
+    # columnnames = []
+    # for item in cursor.description:
+    #     columnnames.append(item[0])
 
     template = loader.get_template("querydata/index.html")
 
     finalQuery = True
 
     ########################### GRAPHICS SECTION JEREMY INTEGRATION#################################
-
-    # Filter out Crime Families since they have unique handleing
-    filteredCrimes = selectedCrimeFamily.copy()
-    #print(type(selectedCrimeFamily))
-    #print(type(filteredCrimes))
-    if ("CRIMESAGAINSTPERSONS"  in selectedCrimeFamily):
-        filteredCrimes.remove("CRIMESAGAINSTPERSONS")
-    if ("CRIMESAGAINSTPROPERTY" in selectedCrimeFamily):
-        filteredCrimes.remove("CRIMESAGAINSTPROPERTY")
-    if ("CRIMESAGAINSTSOCIETY"  in selectedCrimeFamily):
-        filteredCrimes.remove("CRIMESAGAINSTSOCIETY")
 
     # Formulate Crime Query
     crimeQuery = "SUM(" 
@@ -323,14 +316,17 @@ def parameterSelection(request):
     res = cursor.fetchall()
 
     #create a list to store column names from current query to post at top of table
+    columnnames = []
+    for item in cursor.description:
+        columnnames.append(item[0])
+
+    #create a list to store column names from current query to post at top of table
     columns = []
     for item in cursor.description:
         columns.append(item[0])
 
     # Create Global Figure Object, We Will Later Pass this to The Template
     fig = plt.figure()
-
-    selectedGraph = "Line"
 
     if (selectedGraph == "Line"):
 
@@ -452,7 +448,7 @@ def parameterSelection(request):
     buffer.close()
 
     context = {
-        "query" : table,
+        "query" : res,
         "columns" : columnnames,
         "selectedAgencies" : selectedAgencies,
         "selectedStates" : selectedStates,

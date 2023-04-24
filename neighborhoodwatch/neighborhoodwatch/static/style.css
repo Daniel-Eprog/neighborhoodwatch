@@ -57,10 +57,16 @@ li
 p {
   font-family: 'Share Tech Mono', sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 10px;
   font-size: 20px;
   font-weight: 200;
   color: #00204a;
+}
+
+.fontspecific
+{
+    font-family: 'Share Tech Mono', sans-serif;
+
 }
 
 h1 {
@@ -136,7 +142,7 @@ h1 {
 
   }
 
-  .totalEntries
+  #totalEntries
   {
     visibility: hidden;
     align-items: center;
@@ -146,7 +152,6 @@ h1 {
 
   .col-lg-3
   {
-    
     align-items: center;
     margin: auto;
   }
