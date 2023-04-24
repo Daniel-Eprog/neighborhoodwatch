@@ -510,6 +510,23 @@
             </li>
             {% endif %}
 
+            {%if crimes %}
+            <li class="mb-1">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Selected Crimes
+                    </button>
+                    <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton">
+                        {% for crime in crimes %}
+                            <div class="inline-field">
+                                <label for="dropdown-item"> {{crime}} </label>
+                            </div><br>
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+            {% endif %}
+
             {%if selectedYears %}
             <li class="mb-1">
                 <div class="dropdown">

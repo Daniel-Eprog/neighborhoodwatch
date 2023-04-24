@@ -156,84 +156,85 @@ def parameterSelection(request):
                 cursor.execute("DROP VIEW familyids")
 
     #create view with desired crime family ID values
-    cursor.execute("CREATE VIEW familyids AS" + crimeFamilyQuery)
-    cursor.execute("SELECT * FROM familyids")
-    familyIDS = cursor.fetchall()
+    if len(crimeFamilyQuery) > 0:
+        cursor.execute("CREATE VIEW familyids AS" + crimeFamilyQuery)
+        cursor.execute("SELECT * FROM familyids")
+        familyIDS = cursor.fetchall()
     
-    #prepares necessary string to join necessary 
-    allCrimeTables = ["assault", "drugnarcotic", "fraud", "gambling", "homicide", "humantrafficking", "otherproperty", "othersociety", "prostitution", "sexoffense", "theft"]
-    updatedCrimeTable = []
+        #prepares necessary string to join necessary 
+        allCrimeTables = ["assault", "drugnarcotic", "fraud", "gambling", "homicide", "humantrafficking", "otherproperty", "othersociety", "prostitution", "sexoffense", "theft"]
+        updatedCrimeTable = []
 
-    #iterate over each table with name from allCrimeTables and find if they share a respective crimeID 
-    #with users selection if so add them to the updated list
-    for crimeTypes in allCrimeTables:
-        cursor.execute("SELECT distinct CRIMEID FROM " + crimeTypes)
-        checkID = cursor.fetchall()
-        for columns in checkID:
-            for cID in columns:
-                for col in familyIDS:
-                    for fID in col:
-                        if cID == fID:
-                            updatedCrimeTable.append(crimeTypes)
+        #iterate over each table with name from allCrimeTables and find if they share a respective crimeID 
+        #with users selection if so add them to the updated list
+        for crimeTypes in allCrimeTables:
+            cursor.execute("SELECT distinct CRIMEID FROM " + crimeTypes)
+            checkID = cursor.fetchall()
+            for columns in checkID:
+                for cID in columns:
+                    for col in familyIDS:
+                        for fID in col:
+                            if cID == fID:
+                                updatedCrimeTable.append(crimeTypes)
 
-    #checks to see if previously updated views are in the database
-    cursor.execute("SELECT view_name FROM user_views")
-    checkViews = cursor.fetchall()
-    for crimes in allCrimeTables:
-        crimeToCheck = "updated" + crimes
+        #checks to see if previously updated views are in the database
+        cursor.execute("SELECT view_name FROM user_views")
+        checkViews = cursor.fetchall()
+        for crimes in allCrimeTables:
+            crimeToCheck = "updated" + crimes
+            for columns in checkViews:
+                for views in columns:
+                    if crimeToCheck.upper() == views:
+                        cursor.execute("DROP VIEW " + crimeToCheck)
+
+        updatedViewTables = []
+
+        #creates new views for each crime table that matches selected
+        # crimeID without the crimeID column
+        for crimes in updatedCrimeTable:
+            newViewName = "updated" + crimes
+            newView = "CREATE VIEW " + newViewName + " AS SELECT "
+            cursor.execute("SELECT * FROM " + crimes)
+            for col in cursor.description:
+                if col[0] == 'CRIMEID':
+                    continue
+                else:
+                    if col[0] == cursor.description[len(cursor.description) - 1][0]:
+                        newView = newView + col[0]
+                    else:
+                        newView = newView + col[0] + ", "
+            newView = newView + " FROM " + crimes
+            updatedViewTables.append(newViewName)
+            cursor.execute(newView)
+
+            print(updatedCrimeTable)
+        
+        #builds query to compile the final table view that comprises of all items joined together
+        combinedView = ""
+        for views in updatedViewTables:
+            if views == updatedViewTables[0]:
+                combinedView = views + " LEFT JOIN "
+            elif views == updatedViewTables[len(updatedViewTables) - 1]:
+                combinedView = combinedView + views + " using (CRIMESID)"
+            else:
+                combinedView = combinedView + views + " using (CRIMESID) LEFT JOIN "
+
+        #Checks to see if the final crime table view exists from a previous iteration
+        #or if final agencies view exists
+        cursor.execute("SELECT view_name FROM user_views")
+        checkViews = cursor.fetchall()
         for columns in checkViews:
             for views in columns:
-                if crimeToCheck.upper() == views:
-                    cursor.execute("DROP VIEW " + crimeToCheck)
+                if views == 'FINALCRIMETABLE':
+                    cursor.execute("DROP VIEW FINALCRIMETABLE")
+                if views == 'FINALAGENCIES':
+                    cursor.execute("DROP VIEW FINALAGENCIES")
 
-    updatedViewTables = []
-
-    #creates new views for each crime table that matches selected
-    # crimeID without the crimeID column
-    for crimes in updatedCrimeTable:
-        newViewName = "updated" + crimes
-        newView = "CREATE VIEW " + newViewName + " AS SELECT "
-        cursor.execute("SELECT * FROM " + crimes)
-        for col in cursor.description:
-            if col[0] == 'CRIMEID':
-                continue
-            else:
-                if col[0] == cursor.description[len(cursor.description) - 1][0]:
-                    newView = newView + col[0]
-                else:
-                    newView = newView + col[0] + ", "
-        newView = newView + " FROM " + crimes
-        updatedViewTables.append(newViewName)
-        cursor.execute(newView)
-
-        print(updatedCrimeTable)
-    
-    #builds query to compile the final table view that comprises of all items joined together
-    combinedView = ""
-    for views in updatedViewTables:
-        if views == updatedViewTables[0]:
-            combinedView = views + " LEFT JOIN "
-        elif views == updatedViewTables[len(updatedViewTables) - 1]:
-            combinedView = combinedView + views + " using (CRIMESID)"
-        else:
-            combinedView = combinedView + views + " using (CRIMESID) LEFT JOIN "
-
-    #Checks to see if the final crime table view exists from a previous iteration
-    #or if final agencies view exists
-    cursor.execute("SELECT view_name FROM user_views")
-    checkViews = cursor.fetchall()
-    for columns in checkViews:
-        for views in columns:
-            if views == 'FINALCRIMETABLE':
-                cursor.execute("DROP VIEW FINALCRIMETABLE")
-            if views == 'FINALAGENCIES':
-                cursor.execute("DROP VIEW FINALAGENCIES")
-
-    agencies = "\' OR agenciesid.agencyname = \'".join(selectedAgencies)
-    #final agencies table
-    print("CREATE VIEW finalagencies AS SELECT * FROM agenciesid WHERE agenciesid.agencyname = \'" + agencies + "\'")
-    # cursor.execute("CREATE VIEW finalagencies AS SELECT * FROM agenciesid WHERE agenciesid.agencyname = \'" + agencies + "\'")
-    # cursor.execute("CREATE VIEW finalcrimetable AS SELECT distinct * FROM " + combinedView)
+        agencies = "\' OR agenciesid.agencyname = \'".join(selectedAgencies)
+        #final agencies table
+        print("CREATE VIEW finalagencies AS SELECT * FROM agenciesid WHERE agenciesid.agencyname = \'" + agencies + "\'")
+        # cursor.execute("CREATE VIEW finalagencies AS SELECT * FROM agenciesid WHERE agenciesid.agencyname = \'" + agencies + "\'")
+        # cursor.execute("CREATE VIEW finalcrimetable AS SELECT distinct * FROM " + combinedView)
 
 
     # cursor.execute("SELECT distinct * FROM finalagencies INNER JOIN finalcrimetable ON finalagencies.agencyid = finalcrimetable.crimesid")
@@ -456,6 +457,7 @@ def parameterSelection(request):
         "selectAgencyType" : selectAgencyType,
         "selectedYears" : selectedYears,
         "finalQuery" : finalQuery,
+        "crimes" : filteredCrimes,
         "graph" : b64 # Read by the template file
     }
 
